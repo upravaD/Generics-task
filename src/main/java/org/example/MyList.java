@@ -39,6 +39,7 @@ public class MyList<N extends Number> implements Iterable<N> {
 
     public N remove(int index) {
         N element = null;
+
         for (int i = index; i < size - 1; i++) {
             if (i == index) {
                 element = array[i];
@@ -51,6 +52,7 @@ public class MyList<N extends Number> implements Iterable<N> {
 
     public <M extends Number> MyList<M> map(Function<? super N, ? extends M> mapper) {
         MyList<M> mappedList = new MyList<>();
+
         for (N n : array) {
             if (n != null) {
                 mappedList.add(mapper.apply(n));
@@ -65,7 +67,12 @@ public class MyList<N extends Number> implements Iterable<N> {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int result = 0;
+        for (int i = 0; i < size; i++) {
+            result = array[i] != null ? array[i].hashCode() : 0;
+            result = 31 * result + (array[i] != null ? array[i].hashCode() : 0);
+        }
+        return result;
     }
 
     @Override
@@ -75,7 +82,22 @@ public class MyList<N extends Number> implements Iterable<N> {
 
     @Override
     public String toString() {
-        return super.toString();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < size; i++) {
+            if (i == 0) stringBuilder.append("[");
+            if (i < size - 1) {
+                stringBuilder
+                        .append(array[i])
+                        .append(", ");
+            }
+            if (i == size - 1) {
+                stringBuilder
+                        .append(array[i])
+                        .append("]");
+            }
+        }
+        return String.valueOf(stringBuilder);
     }
 
     public MyIterator iterator() {
@@ -83,7 +105,7 @@ public class MyList<N extends Number> implements Iterable<N> {
     }
 
     /**
-     *      Описать разницу между статическим InnerClass и обычным
+     * Описать разницу между статическим InnerClass и обычным
      */
     public class MyIterator implements Iterator<N> {
         @Override

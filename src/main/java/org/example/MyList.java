@@ -33,6 +33,15 @@ public class MyList<N extends Number> implements Iterable<N> {
         return array[index];
     }
 
+    public int indexOf(N number) {
+        for (int i = 0; i < size; i++) {
+            if (Objects.equals(array[i], number)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private void resize() {
         this.array = Arrays.copyOf(this.array, (int) (array.length * 1.5));
     }
@@ -67,17 +76,21 @@ public class MyList<N extends Number> implements Iterable<N> {
 
     @Override
     public int hashCode() {
-        int result = 0;
-        for (int i = 0; i < size; i++) {
-            result = array[i] != null ? array[i].hashCode() : 0;
-            result = 31 * result + (array[i] != null ? array[i].hashCode() : 0);
+        int result = 1;
+        for (N n : array) {
+            result = 31 * result + n.hashCode();
         }
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (this == obj) return true;
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
+        MyList<? extends Number> result = (MyList<? extends Number>) obj;
+        return Arrays.equals(array, result.array);
     }
 
     @Override
@@ -105,17 +118,21 @@ public class MyList<N extends Number> implements Iterable<N> {
     }
 
     /**
-     * Описать разницу между статическим InnerClass и обычным
+     * Описать разницу между статическим InnerClass и обычным InnerClass
+     * 1. Из статического InnerClass`a можно обращаться только к статическим переменным.
+     * 2. Экземпляр статического InnerClass`a нельзя создать без обьекта внешнего класса.
      */
     public class MyIterator implements Iterator<N> {
+        int position = 0;
+
         @Override
         public boolean hasNext() {
-            return false;
+            return position < size;
         }
 
         @Override
         public N next() {
-            return null;
+            return array[position++];
         }
     }
 }
